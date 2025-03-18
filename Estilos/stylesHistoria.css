@@ -1,0 +1,886 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+img{
+  width: 10%;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+}
+
+.padding-btn{
+  display: flex;
+  padding: 10px;
+}
+
+.brand-name {
+  font-family: 'Georgia', serif;
+  font-size: 1.2em;
+  color: #4a2c2a;
+  text-align: left;
+}
+
+.brand-container img {
+  height: 100px;
+  width: auto;
+}
+
+.brand-container h1 span {
+  font-size: 2.5rem;
+  color: #7a5230;
+  margin-bottom: 2rem;
+  font-family: 'Georgia', serif;
+}
+
+.header {
+  padding: 1rem;
+  background-color: #f5f0e1;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-text h1 span {
+  color: #6d421d;
+}
+
+.footer {
+  background: #6d421d;
+  color: white;
+  border-radius: 10px;
+  display: grid;
+  padding: 4rem 0;
+  background-image: url('../aromaImagenes/backgroundInferior.jpg');
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 0 1rem;
+  font-style: italic;
+}
+
+.footer-text{
+  background-color: #333;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.footer-content a {
+  color: white;
+  text-decoration: none;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    padding-top: 10px;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-tittle {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-image {
+    margin-top: 2rem;
+  }
+
+  .nav {
+    position: relative;
+  }
+}
+
+/*Estilo botones superiores*/
+/* From Uiverse.io by Custyyyy */ 
+.btn-superiores {
+  align-items: center;
+  border-radius: .25rem;
+  cursor: pointer;
+  display: flex;
+  color: #4a2c2a;
+  padding: calc(.375rem - 1px) calc(1.5rem - 1px);
+  text-decoration: none;
+  transition: all 280ms;
+}
+   
+  .btn-superiores:hover,
+  .btn-superiores:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+  }
+   
+  .btn-superiores:hover {
+    transform: translateY(-4px);
+    background-color: #e0c8b0; /* Color de acento de café claro */
+    color: #fff;
+  }
+   
+  .btn-superiores:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+/*Botones redes sociales*/
+/* From Uiverse.io by roajuan93 */ 
+.card_Bottom {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 10px;
+    background-color: rgb(238, 238, 238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 25px;
+    gap: 20px;
+    box-shadow: 0px 0px 20px rgba(104, 75, 38, 0.055);
+  }
+  
+  .socialContainer {
+    width: 52px;
+    height: 52px;
+    border-radius: 5px;
+    background-color: rgb(44, 44, 44);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition-duration: 0.3s;
+  }
+  /* instagram*/
+  .containerOne:hover {
+    background-color: #C13584;
+    transition-duration: 0.3s;
+  }
+  /* Tiktok*/
+  .containerTwo:hover {
+    background-color: #25f4ee;
+    transition-duration: 0.3s;
+  }
+  /* Facebook*/
+  .containerThree:hover {
+    background-color: #1877f2;
+    transition-duration: 0.3s;
+  }
+  /* Whatsapp*/
+  .containerFour:hover {
+    background-color: #25D366;
+    transition-duration: 0.3s;
+  }
+  
+  .socialContainer:active {
+    transform: scale(0.9);
+    transition-duration: 0.3s;
+  }
+  
+  .socialSvg {
+    width: 19px;
+  }
+  .largeIcon {
+    width: 27px;
+  }
+  .socialSvg path {
+    fill: rgb(255, 255, 255);
+  }
+  
+  .socialContainer:hover .socialSvg {
+    animation: slide-in-top 0.3s both;
+  }
+  
+  @keyframes slide-in-top {
+    0% {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+  
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+}
+
+/*Boton buscar*/
+/* From Uiverse.io by krlozCJ */ 
+.search {
+    position: relative;
+    --size-button: 40px;
+    color: white;
+  }
+  
+  .input {
+    padding-left: var(--size-button);
+    height: var(--size-button);
+    font-size: 15px;
+    border: none;
+    color: #fff;
+    outline: none;
+    position: absolute;
+    width: var(--size-button);
+    transition: all ease 0.3s;
+    background-color: #6d421d;
+    box-shadow: 1.5px 1.5px 3px #6d421d, -1.5px -1.5px 3px rgb(95 94 94 / 25%), inset 0px 0px 0px #6d421d, inset 0px -0px 0px #5f5e5e;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+  
+  .input:focus,
+  .input:not(:invalid) {
+    width: 200px;
+    cursor: text;
+    box-shadow: 0px 0px 0px #6d421d, 0px 0px 0px rgb(95 94 94 / 25%), inset 1.5px 1.5px 3px #6d421d, inset -1.5px -1.5px 3px #5f5e5e;
+  }
+  
+  .input:focus + .icon,
+  .input:not(:invalid) + .icon {
+    pointer-events: all;
+    cursor: pointer;
+  }
+  
+  .search .icon {
+    position: absolute;
+    width: var(--size-button);
+    height: var(--size-button);
+    top: 0;
+    left: 0;
+    padding: 8px;
+    pointer-events: none;
+  }
+  
+  .search .icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.hero-tittle {
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 50px;
+  position: relative;
+  color: white;
+  background-image: url('../aromaImagenes/ImageHistoriaFondo.jpeg');
+}
+
+.hero-tittle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.hero-tittle h1 {
+  font-size: 48px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20px;
+  font-family: 'Georgia', serif;
+}
+
+.hero-tittle p {
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+.section {
+  padding: 3rem 1rem;
+  margin: 2rem 0;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+  font-size: 2.5rem;
+  color: #7a5230;
+  margin-bottom: 1rem;
+  font-family: 'Georgia', serif;
+}
+
+.section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #4a4a4a;
+  margin-bottom: 1.5rem;
+  font-family: 'Arial', sans-serif;
+}
+
+.historia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10rem;
+}
+
+.historia-text {
+  flex: 1;
+  max-width: 600px;
+  text-align: left;
+  padding: 10px;
+  font-family: 'Arial', sans-serif;
+}
+
+.historia-text h2 {
+  font-size: 2.5rem;
+  color: #7a5230;
+  margin-bottom: 1rem;
+  font-family: 'Georgia', serif;
+}
+
+.historia-text p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #4a4a4a;
+  text-align: justify;
+  margin-bottom: 1rem;
+}
+
+.historia img {
+  flex: 1;
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.territorio {
+  text-align: center;
+}
+
+.territorio h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.territorio .image-gallery {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.territorio p {
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.territorio .image-gallery img {
+  max-width: 45%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sostenibilidad {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.sostenibilidad h2{
+  font-size: 2.5rem;
+  color: #7a5230;
+  margin-bottom: 2rem;
+  font-family: 'Georgia', serif;
+}
+
+.download-button {
+  display: inline-block;
+  position: relative;
+  padding: 15px 25px;
+  background-color: #7a5230;
+  color: white;
+  font-family: sans-serif;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1.5em;
+  text-align: center;
+  text-indent: 15px;
+  border: none;
+}
+
+.download-button:hover {
+  background-color: #7a5230;
+  color: white;
+}
+
+.download-button:before, .download-button:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  left: 20px;
+  top: 60%;
+ }
+ 
+ .download-button:before {
+  width: 10px;
+  height: 1px;
+  border-style: solid;
+  border-width: 0 2px 2px;
+ }
+ 
+ .download-button:after {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  margin-top: -7px;
+  border-style: solid;
+  border-width: 4px 4px 0 4px;
+  border-color: transparent;
+  border-top-color: inherit;
+  animation: downloadArrow 1s linear infinite;
+  animation-play-state: paused;
+ }
+ 
+ .download-button:hover:before {
+  border-color: #cdefbd;
+ }
+ 
+ .download-button:hover:after {
+  border-top-color: #cdefbd;
+  animation-play-state: running;
+ }
+ 
+ @keyframes downloadArrow {
+  0% {
+   margin-top: -7px;
+   opacity: 1;
+  }
+ 
+  0.001% {
+   margin-top: -15px;
+   opacity: 0.4;
+  }
+ 
+  50% {
+   opacity: 1;
+  }
+ 
+  100% {
+   margin-top: 0;
+   opacity: 0.4;
+  }
+ }
+
+@media (max-width: 768px) {
+  .historia {
+    grid-template-columns: 1fr;
+  }
+  
+  .image-gallery {
+    grid-template-columns: 1fr;
+  }
+  
+  .section {
+    padding: 30px;
+  }
+
+  .historia {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
+/*Estilo botones juntos*/
+/* From Uiverse.io by vinodjangid07 */ 
+.navigation-card {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background-color: rgb(255, 255, 255);
+  padding: 15px 20px;
+  border-radius: 50px;
+  }
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  background-color: rgb(252, 252, 252);
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+  }
+
+.tab:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  background-color: #e0c8b0; /* Color de acento de café claro */
+  color: #fff;
+}
+
+.tab:active{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+}
+
+/* Estilo para la visibilidad del menú */
+/* Botón hamburguesa (pantallas pequeñas) */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.hamburger-menu span {
+  width: 100%;
+  height: 0.25rem;
+  border-radius: 0.125rem;
+  background-color: #6d421d;
+  box-shadow: 0 .5px 2px 0 hsla(0, 0%, 0%, .2);
+  transition: width .4s, transform .4s, background-color .4s;
+}
+
+/* Comportamiento por defecto (pantallas grandes) */
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hamburger-menu:active{
+  transform: translateX(10%) translateY(10%) scale(0.9);
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .card_Bottom{
+    margin-bottom: 20px;
+    margin-left: 20px;
+    align-items: center;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-text {
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+}
+
+/*Estilos del formulario*/
+/* From Uiverse.io by R1SH4BH81 */ 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ffffff;
+  padding: 30px;
+  width: 450px;
+  border-radius: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+  Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+::placeholder {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+  Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.form button {
+  align-self: flex-end;
+}
+
+.flex-column > label {
+  color: #151717;
+  font-weight: 600;
+}
+
+.inputForm {
+  border: 1.5px solid #ecedec;
+  border-radius: 10px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  transition: 0.2s ease-in-out;
+}
+
+.input-name {
+  margin-left: 10px;
+  border-radius: 10px;
+  border: none;
+  width: 85%;
+  height: 100%;
+}
+
+.input-name:focus {
+  outline: none;
+}
+
+.inputForm:focus-within {
+  border: 1.5px solid #2d79f3;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.flex-row > div > label {
+  font-size: 14px;
+  color: black;
+  font-weight: 400;
+}
+
+.span {
+  font-size: 14px;
+  margin-left: 5px;
+  color: #2d79f3;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.button-submit {
+  margin: 20px 0 10px 0;
+  background-color: #4a2c2a;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.button-submit:hover {
+  background-color: #4d5050;
+}
+
+.form p {
+  text-align: center;
+  color: black;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.btn {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  gap: 10px;
+  border: 1px solid #ededef;
+  background-color: white;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  border: 1px solid #2d79f3;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  justify-content: center;
+  align-items: center;
+}
+
+#signupForm {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/*Boton cerrar formulario*/
+/* From Uiverse.io by javierBarroso */ 
+.button_close {
+  position: relative; 
+  background: red;
+  color: white;
+  width: 3em;
+  height: 3em;
+  border: none;
+  display: flex;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.X {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2em;
+  height: 1.5px;
+  background-color: rgb(255, 255, 255);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.Y {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2em;
+  height: 1.5px;
+  background-color: #fff;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.close {
+  position: absolute;
+  display: flex;
+  padding: 0.8rem 1.5rem;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  top: -70%;
+  left: 50%;
+  width: 3em;
+  height: 1.7em;
+  font-size: 12px;
+  background-color: rgb(19, 22, 24);
+  color: rgb(187, 229, 236);
+  border: none;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.button_close:hover {
+  background-color: rgb(211, 21, 21);
+}
+
+.button_close:active {
+  background-color: rgb(130, 0, 0);
+}
+
+.button_close:hover > .close {
+  animation: close 0.2s forwards 0.25s;
+}
+
+@keyframes close {
+  100% {
+    opacity: 1;
+  }
+}
