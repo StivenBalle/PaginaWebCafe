@@ -1,0 +1,29 @@
+# 🔐 Claves y configuraciones privadas
+.env
+
+# 🧱 Node.js
+node_modules/
+package-lock.json
+npm-debug.log
+yarn.lock
+
+# 💻 Sistemas operativos
+.DS_Store
+Thumbs.db
+
+# ⚙️ Archivos temporales o de desarrollo
+*.log
+*.tmp
+*.swp
+*.bak
+
+# 🚀 Archivos de deploy locales
+dist/
+build/
+
+# ⚙️ Visual Studio Code u otros IDEs
+.vscode/
+.idea/
+
+# 🔒 Archivos de Stripe o configs locales
+stripe-logs/
