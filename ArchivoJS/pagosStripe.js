@@ -2,8 +2,10 @@ const $d = document;
 const $bolsas = $d.getElementById("bolsas");
 const $template = $d.getElementById("bolsa-template").content;
 const $fragment = $d.createDocumentFragment();
+const noProductsDiv = document.getElementById("no-products");
 
 let products, prices, stripePublicKey, stripe;
+let lastProductCount = 0; 
 
 // Función para inicializar la aplicación
 async function initApp() {
@@ -43,9 +45,20 @@ async function initApp() {
 
     products = data.products;
     prices = data.prices;
-    
+
+  if (!products.length || !prices.length) {
+    document.getElementById("no-products").style.display = "block";
+  } else {
+    // Contar productos activos
+    lastProductCount = prices.filter(el => {
+      const product = products.find(p => p.id === el.product);
+      return el.active && product?.active;
+    }).length;
+
     renderProducts();
-    
+  }
+  startPollingForNewProducts();
+
   } catch (error) {
     console.error("❌ Error completo:", error);
     console.error("❌ Stack trace:", error.stack);
@@ -75,12 +88,17 @@ async function initApp() {
 
 // Función para renderizar productos
 function renderProducts() {
+
+  $bolsas.innerHTML = ""; // Limpiar contenedor de productos
+  const fragment = document.createDocumentFragment();
+  let hasProducts = false;
+
   prices.forEach((el) => {
     // Buscar el producto asociado al precio
     let productData = products.find((product) => product.id === el.product);
 
-    if (!productData || !el.active) return; // Saltar si no hay producto o precio inactivo
-
+    if (!productData || !el.active || !productData.active) return; // Saltar si no hay producto o precio inactivo
+    hasProducts = true;
     // Configurar la tarjeta
     const $clone = $d.importNode($template, true);
     $clone.querySelector(".bolsa").setAttribute("data-price", el.id);
@@ -90,7 +108,7 @@ function renderProducts() {
     $clone.querySelector("img").alt = productData.name || "Producto sin nombre";
     
     // Formatear el precio (unit_amount está en centavos)
-    const amount = el.unit_amount / 100; // Convertir a unidad principal
+    const amount = el.unit_amount / 100;
     const currency = el.currency.toUpperCase();
     const formattedPrice = new Intl.NumberFormat("es-CO", {
         style: "currency",
@@ -99,42 +117,63 @@ function renderProducts() {
     
     $clone.querySelector("figcaption").innerHTML = `${productData.name || "Sin nombre"}<br>${formattedPrice}`;
 
-    $fragment.appendChild($clone);
+    fragment.appendChild($clone);
   });
 
-  // Limpiar y agregar las tarjetas al contenedor
-  $bolsas.innerHTML = "";
-  $bolsas.appendChild($fragment);
+  if (hasProducts) {
+    $bolsas.appendChild(fragment);
+    noProductsDiv.style.display = "none";
+  } else {
+    noProductsDiv.style.display = "block";
+  }
 }
 
 // Event listener para clicks en productos
 $d.addEventListener("click", async (e) => {
-  if (e.target.matches(".products *")) {
-    let priceId = e.target.parentElement.getAttribute("data-price");
-    if (priceId) {
-      try {
-        // Crear sesión de checkout en el servidor
-        const response = await fetch("/api/create-checkout-session", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ priceId: priceId }),
-        });
+  if (e.target.closest(".bolsa")) {
+    const priceId = e.target.closest(".bolsa").getAttribute("data-price");
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    // Buscar si el producto aún está activo
+    const price = prices.find(p => p.id === priceId);
+    const product = price && products.find(prod => prod.id === price.product);
 
-        const session = await response.json();
-        
-        // Redirigir a Stripe Checkout
-        window.location.href = session.url;
-        
-      } catch (error) {
-        console.error("Error al crear sesión de checkout:", error);
-        $bolsas.insertAdjacentHTML("afterend", `<p>Error: ${error.message}</p>`);
+    if (!price || !product || !price.active || !product.active) {
+      Swal.fire({
+        icon: "warning",
+        title: "Producto no disponible",
+        text: "Este producto ha sido retirado temporalmente.",
+        confirmButtonText: "Entendido"
+      }).then(() => {
+        location.reload();
+      });
+    }
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ priceId: priceId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const session = await response.json();
+      window.location.href = session.url;
+
+    } catch (error) {
+      console.error("Error al crear sesión de checkout:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error al procesar el pago",
+        text: "Ocurrió un error inesperado.",
+        confirmButtonText: "Entendido"
+      }).then(() => {
+        location.reload();
+      });
     }
   }
 });
@@ -159,6 +198,32 @@ async function checkServerStatus() {
     statusElement.innerHTML = `❌ No se puede conectar al servidor: ${error.message}`;
     statusElement.style.color = 'red';
   }
+}
+
+// Función Polling para monitorear si hay o no productos disponibles
+function startPollingForNewProducts() {
+  setInterval(async () => {
+    try {
+      const response = await fetch("/api/products");
+      const data = await response.json();
+      const currentProducts = data.products;
+      const currentPrices = data.prices;
+
+      const currentActiveCount = currentPrices.filter(el => {
+        const product = currentProducts.find(p => p.id === el.product);
+        return el.active && product?.active;
+      }).length;
+
+      if (currentActiveCount > lastProductCount) {
+        if (confirm("¡Nuevos productos disponibles! ¿Deseas recargar la página para verlos?")) {
+          location.reload();
+        }
+        lastProductCount = currentActiveCount;
+      }
+    } catch (err) {
+      console.warn("Error al verificar productos nuevos:", err.message);
+    }
+  }, 60000);
 }
 
 // Inicializar la aplicación cuando se carga la página

@@ -92,6 +92,7 @@ img{
   gap: 2rem;
   padding: 0 1rem;
   font-style: italic;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .footer-text{
@@ -321,6 +322,7 @@ img{
   position: relative;
   color: white;
   background-image: url('../aromaImagenes/ImageHistoriaFondo.jpeg');
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .hero-tittle::before {
@@ -377,6 +379,7 @@ img{
   flex-wrap: wrap;
   align-items: center;
   gap: 10rem;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .historia-text {
@@ -413,6 +416,7 @@ img{
 
 .territorio {
   text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .territorio h2 {
@@ -441,8 +445,9 @@ img{
 }
 
 .sostenibilidad {
-    text-align: center;
-    padding: 50px 0;
+  text-align: center;
+  padding: 50px 0;
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .sostenibilidad h2{
@@ -883,4 +888,9 @@ img{
   100% {
     opacity: 1;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }

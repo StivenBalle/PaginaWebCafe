@@ -6,99 +6,105 @@ const path = require("path");
 
 dotenv.config();
 
-// Verificar que las variables de entorno estén configuradas
+const app = express();
+
+// Verifica variables de entorno
 if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PUBLIC_KEY) {
-  console.error("❌ Error: Faltan las claves de Stripe en el archivo .env");
-  console.error("Asegúrate de tener STRIPE_SECRET_KEY y STRIPE_PUBLIC_KEY");
+  console.error("❌ Claves de Stripe faltantes en .env");
   process.exit(1);
 }
 
-const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname)); // Servir archivos estáticos
 
-// Middleware de logging para debugging
+// Logger
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
-// Servir archivos estáticos DESPUÉS de las rutas API
-// Endpoint para obtener la clave pública de Stripe
+// Obtener clave pública
 app.get("/api/config", (req, res) => {
-  console.log("📡 Solicitando configuración de Stripe");
   res.json({
     publishableKey: process.env.STRIPE_PUBLIC_KEY,
   });
 });
 
-// Endpoint para obtener productos y precios
+// Obtener los productos
 app.get("/api/products", async (req, res) => {
-  console.log("📦 Solicitando productos de Stripe");
+  console.log("📦 Solicitando productos activos de Stripe");
   try {
-    const products = await stripe.products.list();
-    const prices = await stripe.prices.list();
-    console.log(`✅ Productos obtenidos: ${products.data.length} productos, ${prices.data.length} precios`);
-    res.json({ products: products.data, prices: prices.data });
+    const productsRes = await stripe.products.list({ active: true });
+    const pricesRes = await stripe.prices.list({ active: true });
+
+    const products = productsRes.data;
+    const prices = pricesRes.data;
+
+    // Filtrar solo precios que tengan un producto válido
+    const validPrices = prices.filter(price =>
+      products.some(product => product.id === price.product)
+    );
+
+    console.log(`✅ Productos activos: ${products.length}`);
+    console.log(`✅ Precios activos válidos: ${validPrices.length}`);
+
+    res.json({
+      products,
+      prices: validPrices
+    });
+
   } catch (error) {
     console.error("❌ Error al obtener productos:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Endpoint para crear sesión de checkout
+
+// Crear sesión de pago
 app.post("/api/create-checkout-session", async (req, res) => {
-  console.log("💳 Creando sesión de checkout");
   try {
     const { priceId } = req.body;
-    
+
     if (!priceId) {
-      return res.status(400).json({ error: "priceId es requerido" });
+      return res.status(400).json({ error: "El campo 'priceId' es obligatorio." });
     }
-    
+
     const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: "subscription", // Cambia a "payment" si no es suscripción
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: "subscription", // Cambia a "payment" si es pago único
       success_url: `${req.headers.origin || 'http://localhost:3000'}/assets/successfulPayment.html`,
       cancel_url: `${req.headers.origin || 'http://localhost:3000'}/assets/paymentCanceled.html`,
     });
 
-    console.log("✅ Sesión de checkout creada:", session.id);
-    res.json({ url: session.url });
+    res.status(200).json({ url: session.url });
   } catch (error) {
-    console.error("❌ Error al crear sesión de checkout:", error.message);
-    res.status(500).json({ error: error.message });
+    console.error("❌ Error creando sesión de pago:", error);
+    res.status(500).json({
+      error: "No se pudo crear la sesión de pago.",
+      details: error.message,
+    });
   }
 });
 
-// Servir archivos estáticos desde la raíz del proyecto (no desde 'public')
-app.use(express.static(__dirname));
-
-// Ruta específica para servir el index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Ruta principal
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Manejar rutas que no existen
+// Manejo de rutas no encontradas
 app.use((req, res) => {
-  if (req.url.startsWith('/api/')) {
-    res.status(404).json({ error: `API endpoint not found: ${req.url}` });
+  if (req.url.startsWith("/api/")) {
+    res.status(404).json({ error: `Ruta de API no encontrada: ${req.url}` });
   } else {
-    // Para cualquier otra ruta, intentar servir el archivo
-    res.status(404).send('Página no encontrada');
+    res.status(404).send("Página no encontrada");
   }
 });
 
+// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor backend en http://localhost:${PORT}`);
-  console.log(`📂 Archivos estáticos en http://localhost:${PORT}`);
-  console.log(`🔧 API disponible en http://localhost:${PORT}/api/`);
+  console.log(`🚀 Servidor en http://localhost:${PORT}`);
 });
