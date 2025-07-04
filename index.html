@@ -354,7 +354,7 @@
                 ></path>
                 </g>
             </svg>
-            <input type="text" class="input-name" placeholder="Ingresa tu nombre" />
+            <input type="text" class="input-name" id="name_user" placeholder="Ingresa tu nombre" />
             </div>
             <div class="flex-column">
             <label>Email </label>
@@ -372,7 +372,27 @@
                 ></path>
                 </g>
             </svg>
-            <input type="text" class="input-name" placeholder="Ingresa tu Email" />
+            <input type="text" class="input-name" id="email_user" placeholder="Ingresa tu Email" />
+            </div>
+
+            <div class="flex-column">
+                <label>Teléfono </label>
+                </div>
+                <div class="inputForm">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20"
+                    width="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.91 19.91 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.13 1.23.49 2.42 1.05 3.53a2 2 0 0 1-.45 2.18l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.18-.45 15.89 15.89 0 0 0 3.53 1.05 2 2 0 0 1 1.72 2z" />
+                </svg>
+                <input type="text" class="input-name" id="phone_user" placeholder="Ingresa tu teléfono" />
             </div>
 
             <div class="flex-column">
@@ -392,10 +412,10 @@
                 d="m304 224c-8.832031 0-16-7.167969-16-16v-80c0-52.929688-43.070312-96-96-96s-96 43.070312-96 96v80c0 8.832031-7.167969 16-16 16s-16-7.167969-16-16v-80c0-70.59375 57.40625-128 128-128s128 57.40625 128 128v80c0 8.832031-7.167969 16-16 16zm0 0"
                 ></path>
             </svg>
-            <input type="password" class="input-name" placeholder="Ingresa tu contraseña" />
+            <input type="password" class="input-name" id="password_user" placeholder="Ingresa tu contraseña" />
             </div>
 
-            <button class="button-submit">Registrate</button>
+            <button class="button-submit" type="submit">Registrate</button>
             <p class="p">¿Ya tienes una cuenta? <span class="span">Inicia Sesión</span></p>
             <div class="flex-row">
             <button class="btn google">
@@ -440,6 +460,7 @@
             </button>
             </div>
         </form>
+        <script type="module" src="./ArchivoJS/authFront.js"></script>
     </div>
 
     <script src="./ArchivoJS/aromaScript.js"></script>

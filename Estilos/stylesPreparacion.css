@@ -494,7 +494,7 @@
   .form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 3px;
     background-color: #ffffff;
     padding: 30px;
     width: 450px;
