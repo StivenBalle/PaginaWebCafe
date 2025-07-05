@@ -41,3 +41,81 @@ form.addEventListener("submit", async (e) => {
     });
   }
 });
+
+const signupLink = document.getElementById("signup-link");
+
+signupLink.addEventListener("click", () => {
+  document.getElementById("signupForm").style.display = "block";
+  document.getElementById("loginForm").style.display = "none";
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loginLink = document.getElementById("login-link");
+  const loginFormDiv = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
+
+  loginLink.addEventListener("click", () => {
+    signupForm.style.display = "none";
+    loginFormDiv.style.display = "block";
+  });
+});
+
+const closeButton = document.getElementById("close-button-form");
+closeButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("overlay").style.display = "none";;
+});
+
+const closeButtonLogin = document.getElementById("close-button-login");
+closeButtonLogin.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("overlay").style.display = "none";;
+});
+
+document.querySelector(".form-login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      Swal.fire({
+        icon: "success",
+        title: "Bienvenido",
+        text: `Hola ${data.user.name}`,
+        timer: 2000,
+      }).then(() => {
+        location.reload();
+      });
+
+      // Guardar token si vas a usar autenticación
+      localStorage.setItem("token", data.token);
+
+      setTimeout(() => {
+        window.location.href = "/index.html";
+      }, 2000);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.error,
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops",
+      text: "No se pudo conectar al servidor",
+    });
+  }
+});

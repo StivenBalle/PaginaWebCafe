@@ -1,17 +1,24 @@
-const pool = require('../backend/db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const express = require('express');
+const router = express.Router();
+const loginUser = require('./LoginUser');
 
-async function loginUser(email, password) {
-  const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-  if (users.length === 0) throw new Error('Usuario no encontrado');
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
-  const user = users[0];
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) throw new Error('Contraseña incorrecta');
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email y contraseña son obligatorios.' });
+  }
 
-  const token = jwt.sign({ id: user.id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return { token, user: { id: user.id, name: user.name, email: user.email } };
-}
+  try {
+    const result = await loginUser(email, password);
+    res.status(200).json(result);
+  } catch (err) {
+    console.error('Error al iniciar sesión:', err.message);
+    if (err.message === 'Usuario no encontrado' || err.message === 'Contraseña incorrecta') {
+      return res.status(401).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
 
-module.exports = loginUser;
+module.exports = router;
