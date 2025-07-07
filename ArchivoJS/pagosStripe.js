@@ -131,6 +131,27 @@ function renderProducts() {
 // Event listener para clicks en productos
 $d.addEventListener("click", async (e) => {
   if (e.target.closest(".bolsa")) {
+    const token = localStorage.getItem("token");
+
+    console.log("🕵️ Verificando sesión...");
+    console.log("📦 Token en localStorage:", token);
+
+    if (!token) {
+      console.warn("❌ No hay sesión activa, bloqueando compra");
+
+      Swal.fire({
+        icon: "warning",
+        title: "Inicia sesión",
+        text: "Debes iniciar sesión para realizar una compra.",
+        confirmButtonText: "Iniciar sesión"
+      }).then(() => {
+        window.location.href = "/index.html";
+      });
+
+      return;
+    }
+    console.log("✅ Sesión activa detectada, procediendo con compra");
+
     const priceId = e.target.closest(".bolsa").getAttribute("data-price");
 
     // Buscar si el producto aún está activo

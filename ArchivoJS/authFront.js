@@ -76,8 +76,17 @@ closeButtonLogin.addEventListener("click", (e) => {
 document.querySelector(".form-login").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("username").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    Swal.fire({
+      icon: "warning",
+      title: "Campos requeridos",
+      text: "Por favor ingresa email y contraseña",
+    });
+    return;
+  }
 
   try {
     const res = await fetch("/api/auth/login", {
@@ -92,7 +101,7 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
       Swal.fire({
         icon: "success",
         title: "Bienvenido",
-        text: `Hola ${data.user.name}`,
+        text: `Hola, ${data.user.name}`,
         timer: 2000,
       }).then(() => {
         location.reload();
@@ -100,7 +109,7 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
 
       // Guardar token si vas a usar autenticación
       localStorage.setItem("token", data.token);
-
+      localStorage.setItem("user", JSON.stringify(data.user));
       setTimeout(() => {
         window.location.href = "/index.html";
       }, 2000);
@@ -116,6 +125,260 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
       icon: "error",
       title: "Oops",
       text: "No se pudo conectar al servidor",
+    });
+  }
+});
+
+document.querySelector(".form-login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    Swal.fire({
+      icon: "warning",
+      title: "Campos requeridos",
+      text: "Por favor ingresa email y contraseña",
+    });
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // Guardar token y usuario en localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      Swal.fire({
+        icon: "success",
+        title: "Bienvenido",
+        text: `Hola, ${data.user.name}`,
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        // Actualizar la UI inmediatamente
+        updateAuthUI();
+        
+        // Cerrar el modal/formulario si existe
+        closeAuthModal();
+        
+        // Opcional: redirigir después de un breve delay
+        setTimeout(() => {
+          window.location.href = "/index.html";
+        }, 2000);
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.error,
+      });
+    }
+  } catch (error) {
+    console.error("Error en login:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops",
+      text: "No se pudo conectar al servidor",
+    });
+  }
+});
+
+// Función para actualizar la UI después del login
+function updateAuthUI() {
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+  
+  if (token && user) {
+    const userData = JSON.parse(user);
+    showUserProfile(userData);
+  } else {
+    showLoginButton();
+  }
+}
+
+// Función para mostrar el perfil del usuario
+function showUserProfile(userData) {
+  const showFormButton = document.getElementById("show-form-button");
+  const userProfile = document.getElementById("user-profile");
+  const userName = document.getElementById("user-name");
+  const userAvatar = document.getElementById("logout-initial");
+  
+  if (showFormButton && userProfile) {
+    // Ocultar botón de login
+    showFormButton.classList.add("auth-hidden");
+    
+    // Mostrar perfil de usuario
+    userProfile.classList.remove("auth-hidden");
+    userProfile.classList.add("auth-visible");
+    
+    // Configurar información del usuario
+    if (userName) userName.textContent = userData.name || "Usuario";
+    if (userAvatar) userAvatar.textContent = (userData.name || "U").charAt(0).toUpperCase();
+  }
+}
+
+// Función para mostrar el botón de login
+function showLoginButton() {
+  const showFormButton = document.getElementById("show-form-button");
+  const userProfile = document.getElementById("user-profile");
+  
+  if (showFormButton && userProfile) {
+    // Mostrar botón de login
+    showFormButton.classList.remove("auth-hidden");
+    
+    // Ocultar perfil de usuario
+    userProfile.classList.add("auth-hidden");
+    userProfile.classList.remove("auth-visible");
+  }
+}
+
+// Función para cerrar el modal/formulario de autenticación
+function closeAuthModal() {
+  // Personaliza esta función según tu implementación de modal
+  const modal = document.getElementById("auth-modal");
+  const overlay = document.getElementById("modal-overlay");
+  
+  if (modal) {
+    modal.style.display = "none";
+    modal.classList.remove("active");
+  }
+  
+  if (overlay) {
+    overlay.style.display = "none";
+    overlay.classList.remove("active");
+  }
+  
+  // Si usas clases para mostrar/ocultar
+  const authForm = document.querySelector(".auth-form-container");
+  if (authForm) {
+    authForm.classList.remove("show");
+    authForm.classList.add("hide");
+  }
+}
+
+// Función para cerrar sesión
+function logout() {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Se cerrará tu sesión actual',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#8B4513'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Sesión cerrada',
+        text: 'Has cerrado sesión exitosamente',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        updateAuthUI();
+        // Opcional: redirigir a la página principal
+        window.location.href = "/index.html";
+      });
+    }
+  });
+}
+
+// Función para verificar el estado de autenticación al cargar la página
+function checkAuthStatus() {
+  updateAuthUI();
+}
+
+// Inicializar cuando el DOM esté cargado
+document.addEventListener("DOMContentLoaded", function() {
+  checkAuthStatus();
+  
+  // Agregar evento al botón de cerrar sesión si existe
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
+
+// Escuchar cambios en el localStorage (para sincronizar entre pestañas)
+window.addEventListener('storage', function(e) {
+  if (e.key === 'token' || e.key === 'user') {
+    checkAuthStatus();
+  }
+});
+
+// Función adicional para manejar el registro (si tienes formulario de registro)
+document.addEventListener("DOMContentLoaded", function() {
+  const registerForm = document.querySelector(".form-register");
+  
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById("register-name").value.trim();
+      const email = document.getElementById("register-email").value.trim();
+      const password = document.getElementById("register-password").value;
+      
+      if (!name || !email || !password) {
+        Swal.fire({
+          icon: "warning",
+          title: "Campos requeridos",
+          text: "Por favor completa todos los campos",
+        });
+        return;
+      }
+      
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "Tu cuenta ha sido creada correctamente",
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            // Cambiar al formulario de login o cerrar modal
+            // Personaliza según tu implementación
+            const loginTab = document.getElementById("login-tab");
+            if (loginTab) {
+              loginTab.click();
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: data.error,
+          });
+        }
+      } catch (error) {
+        console.error("Error en registro:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops",
+          text: "No se pudo conectar al servidor",
+        });
+      }
     });
   }
 });

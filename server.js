@@ -1,21 +1,18 @@
 const express = require("express");
-const Stripe = require("stripe");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
 const authRoutes = require('./backend/routes/auth');
 
 dotenv.config();
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 // Verifica variables de entorno
-if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PUBLIC_KEY) {
-  console.error("❌ Claves de Stripe faltantes en .env");
+if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PUBLIC_KEY || !process.env.JWT_SECRET) {
+  console.error('❌ Claves de Stripe o JWT faltantes en .env');
   process.exit(1);
 }
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 app.use(cors());
 app.use(express.json());

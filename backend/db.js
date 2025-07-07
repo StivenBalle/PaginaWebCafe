@@ -7,6 +7,9 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  ssl: false,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
 // Logs de verificación
@@ -18,13 +21,14 @@ console.log("Contraseña:", process.env.DB_PASSWORD ? "✔️ cargada" : "❌ va
 console.log("Base de datos:", process.env.DB_NAME);
 
 // Probar la conexión
-pool.connect()
-  .then(client => {
+(async () => {
+  try {
+    const client = await pool.connect();
     console.log("✅ Conexión exitosa a PostgreSQL");
-    client.release(); // ¡IMPORTANTE!
-  })
-  .catch(err => {
+    client.release();
+  } catch (err) {
     console.error("❌ Error al conectar a PostgreSQL:", err.message);
-  });
+  }
+})();
 
 module.exports = pool;

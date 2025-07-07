@@ -3,27 +3,47 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 async function loginUser(email, password) {
-  if (!email.includes('@') || password.length < 4) {
-    throw new Error('Credenciales inválidas');
-  }
+  return new Promise((resolve, reject) => {
+    if (!email.includes('@') || password.length < 4) {
+      return reject(new Error('Credenciales inválidas'));
+    }
 
-  const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-  if (result.rows.length === 0) throw new Error('Usuario no encontrado');
+    pool.query('SELECT * FROM users WHERE email = $1', [email], async (err, result) => {
+      if (err) {
+        return reject(err);
+      }
 
-  const user = result.rows[0];
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) throw new Error('Contraseña incorrecta');
+      if (result.rows.length === 0) {
+        return reject(new Error('Usuario no encontrado'));
+      }
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email, name: user.name },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
+      try {
+        const user = result.rows[0];
+        const match = await bcrypt.compare(password, user.password);
+        
+        if (!match) {
+          return reject(new Error('Contraseña incorrecta'));
+        }
 
-  return {
-    token,
-    user: { id: user.id, name: user.name, email: user.email }
-  };
+        if (!process.env.JWT_SECRET) {
+          return reject(new Error('JWT_SECRET no está configurado'));
+        }
+
+        const token = jwt.sign(
+          { id: user.id, email: user.email, name: user.name },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+        );
+
+        resolve({
+          token,
+          user: { id: user.id, name: user.name, email: user.email }
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
 }
 
 module.exports = loginUser;

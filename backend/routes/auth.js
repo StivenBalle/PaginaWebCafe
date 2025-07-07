@@ -1,6 +1,8 @@
 const express = require('express');
 const registerUser = require('../signup');
-const loginUser = require('../login');
+const pool = require('../../backend/db');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -21,12 +23,71 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  console.log('📝 Intento de login para:', email);
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email y contraseña son obligatorios.' });
+  }
+
+  const client = await pool.connect();
+  
   try {
-    const { email, password } = req.body;
-    const result = await loginUser(email, password);
-    res.json(result);
+    // Validación básica
+    if (!email.includes('@') || password.length < 4) {
+      return res.status(400).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Consultar usuario
+    console.log('🔍 Buscando usuario en la base de datos...');
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    
+    console.log('📊 Usuarios encontrados:', result.rows.length);
+    
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+
+    const user = result.rows[0];
+    console.log('👤 Usuario encontrado:', user.name);
+    
+    // Verificar contraseña
+    console.log('🔐 Verificando contraseña...');
+    const match = await bcrypt.compare(password, user.password);
+    
+    if (!match) {
+      console.log('❌ Contraseña incorrecta');
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+
+    // Verificar JWT_SECRET
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET no configurado');
+      return res.status(500).json({ error: 'Error de configuración del servidor' });
+    }
+
+    // Generar token
+    console.log('🎫 Generando token...');
+    const token = jwt.sign(
+      { id: user.id, email: user.email, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    console.log('✅ Login exitoso para:', email);
+    
+    res.status(200).json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email }
+    });
+
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    console.error('❌ Error al iniciar sesión:', err.message);
+    console.error('❌ Stack trace:', err.stack);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  } finally {
+    client.release(); // CRÍTICO: siempre liberar el cliente
   }
 });
 
