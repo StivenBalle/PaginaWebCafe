@@ -2,18 +2,22 @@ require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: false,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl: {
+    rejectUnauthorized: false,
+  }
 });
 
 // Logs de verificación
 console.log("🛠️ Verificando configuración de base de datos:");
+console.log("URL:", process.env.DATABASE_URL);
 console.log("Host:", process.env.DB_HOST);
 console.log("Puerto:", process.env.DB_PORT);
 console.log("Usuario:", process.env.DB_USER);
