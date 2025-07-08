@@ -128,16 +128,20 @@ function renderProducts() {
   }
 }
 
+function isUserLoggedIn() {
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+
+  return !!(token && user); // Devuelve true si ambos existen
+}
+
 // Event listener para clicks en productos
 $d.addEventListener("click", async (e) => {
   if (e.target.closest(".bolsa")) {
-    const token = localStorage.getItem("token");
+    console.log("🕵️ Verificando sesión de usuario...");
 
-    console.log("🕵️ Verificando sesión...");
-    console.log("📦 Token en localStorage:", token);
-
-    if (!token) {
-      console.warn("❌ No hay sesión activa, bloqueando compra");
+    if (!isUserLoggedIn()) {
+      console.warn("❌ Usuario no autenticado");
 
       Swal.fire({
         icon: "warning",
@@ -150,8 +154,8 @@ $d.addEventListener("click", async (e) => {
 
       return;
     }
-    console.log("✅ Sesión activa detectada, procediendo con compra");
 
+    console.log("✅ Usuario autenticado. Procediendo con la compra...");
     const priceId = e.target.closest(".bolsa").getAttribute("data-price");
 
     // Buscar si el producto aún está activo

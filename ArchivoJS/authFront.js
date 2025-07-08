@@ -3,10 +3,40 @@ const form = document.getElementById("signupForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   console.log("✅ Evento de envío capturado");
-  const name = document.querySelector("#name_user").value;
-  const phone_number = document.querySelector("#phone_user").value;
-  const email = document.querySelector("#email_user").value;
+
+  const name = document.querySelector("#name_user").value.trim();
+  const phone_number = document.querySelector("#phone_user").value.trim();
+  const email = document.querySelector("#email_user").value.trim();
   const password = document.querySelector("#password_user").value;
+
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^[0-9]{7,15}$/;
+  const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s+[A-Za-zÁÉÍÓÚáéíóúÑñ]+)+$/;
+
+  if (!nameRegex.test(name)) {
+    return Swal.fire({
+      icon: "warning",
+      title: "Nombre inválido",
+      text: "Debe ingresar al menos nombre y apellido",
+    });
+  }
+
+  if (!phoneRegex.test(phone_number)) {
+    return Swal.fire({
+      icon: "warning",
+      title: "Teléfono inválido",
+      text: "Solo se permiten números (7 a 15 dígitos)",
+    });
+  }
+
+  if (!emailRegex.test(email)) {
+    return Swal.fire({
+      icon: "warning",
+      title: "Email inválido",
+      text: "Debe tener el formato nombre@dominio.com",
+    });
+  }
 
   try {
     const response = await fetch("/api/auth/register", {
@@ -49,7 +79,6 @@ signupLink.addEventListener("click", () => {
   document.getElementById("loginForm").style.display = "none";
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const loginLink = document.getElementById("login-link");
   const loginFormDiv = document.getElementById("loginForm");
@@ -88,60 +117,13 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
     return;
   }
 
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      Swal.fire({
-        icon: "success",
-        title: "Bienvenido",
-        text: `Hola, ${data.user.name}`,
-        timer: 2000,
-      }).then(() => {
-        location.reload();
-      });
-
-      // Guardar token si vas a usar autenticación
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setTimeout(() => {
-        window.location.href = "/index.html";
-      }, 2000);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: data.error,
-      });
-    }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops",
-      text: "No se pudo conectar al servidor",
-    });
-  }
-});
-
-document.querySelector(".form-login").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  if (!email || !password) {
-    Swal.fire({
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return Swal.fire({
       icon: "warning",
-      title: "Campos requeridos",
-      text: "Por favor ingresa email y contraseña",
+      title: "Email inválido",
+      text: "Debe tener el formato nombre@dominio.com",
     });
-    return;
   }
 
   try {
@@ -162,7 +144,7 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
         icon: "success",
         title: "Bienvenido",
         text: `Hola, ${data.user.name}`,
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false
       }).then(() => {
         // Actualizar la UI inmediatamente
@@ -174,7 +156,7 @@ document.querySelector(".form-login").addEventListener("submit", async (e) => {
         // Opcional: redirigir después de un breve delay
         setTimeout(() => {
           window.location.href = "/index.html";
-        }, 2000);
+        }, 1000);
       });
     } else {
       Swal.fire({
@@ -285,11 +267,10 @@ function logout() {
         icon: 'success',
         title: 'Sesión cerrada',
         text: 'Has cerrado sesión exitosamente',
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false
       }).then(() => {
         updateAuthUI();
-        // Opcional: redirigir a la página principal
         window.location.href = "/index.html";
       });
     }
@@ -354,11 +335,9 @@ document.addEventListener("DOMContentLoaded", function() {
             icon: "success",
             title: "Registro exitoso",
             text: "Tu cuenta ha sido creada correctamente",
-            timer: 2000,
+            timer: 1000,
             showConfirmButton: false
           }).then(() => {
-            // Cambiar al formulario de login o cerrar modal
-            // Personaliza según tu implementación
             const loginTab = document.getElementById("login-tab");
             if (loginTab) {
               loginTab.click();

@@ -88,29 +88,29 @@ function showLoginButton() {
 // Función para cerrar sesión
 function logout() {
   Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Se cerrará tu sesión actual',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#8B4513'
+    title: '¿Estás seguro?',
+    text: 'Se cerrará tu sesión actual',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cerrar sesión',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#8B4513'
   }).then((result) => {
-      if (result.isConfirmed) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          
-          Swal.fire({
-              icon: 'success',
-              title: 'Sesión cerrada',
-              text: 'Has cerrado sesión exitosamente',
-              timer: 2000,
-              showConfirmButton: false
-          }).then(() => {
-              checkAuthStatus();
-              window.location.href = "/index.html";
-          });
-      }
+    if (result.isConfirmed) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+        
+      Swal.fire({
+        icon: 'success',
+        title: 'Sesión cerrada',
+        text: 'Has cerrado sesión exitosamente',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        checkAuthStatus();
+        window.location.href = "/index.html";
+      });
+    }
   });
 }
 

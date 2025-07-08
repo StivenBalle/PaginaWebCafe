@@ -13,4 +13,28 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = verifyToken;
+function generateToken(user) {
+  const payload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  };
+
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET no está definido en variables de entorno");
+  }
+
+  const options = {
+    expiresIn: '1h',
+    issuer: 'cafe-aroma.com',
+    audience: user.email,
+  };
+
+  return jwt.sign(payload, secret, options);
+}
+
+module.exports = {
+  verifyToken,
+  generateToken
+};

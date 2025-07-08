@@ -3,6 +3,7 @@ const registerUser = require('../signup');
 const pool = require('../../backend/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { generateToken, verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -11,11 +12,19 @@ router.post('/register', async (req, res) => {
   try {
     const { name, phone_number, email, password } = req.body;
     console.log('📡 Recibiendo solicitud de registro:', { name, phone_number, email });
+
     if (!name || !phone_number || !email || !password) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
+
     const result = await registerUser(name, phone_number, email, password);
-    res.json(result);
+    const newUser = result.user || result;
+    const token = generateToken(newUser);
+
+    res.status(201).json({
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email }
+    });
   } catch (err) {
     console.error('❌ Error en el registro:', err);
     res.status(400).json({ error: err.message });
@@ -69,11 +78,7 @@ router.post('/login', async (req, res) => {
 
     // Generar token
     console.log('🎫 Generando token...');
-    const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const token = generateToken(user);
 
     console.log('✅ Login exitoso para:', email);
     
@@ -87,7 +92,7 @@ router.post('/login', async (req, res) => {
     console.error('❌ Stack trace:', err.stack);
     res.status(500).json({ error: 'Error interno del servidor.' });
   } finally {
-    client.release(); // CRÍTICO: siempre liberar el cliente
+    client.release();
   }
 });
 
