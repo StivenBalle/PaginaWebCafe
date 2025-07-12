@@ -3,13 +3,62 @@ const formContainer = document.getElementById("form-container");
 const overlay = document.getElementById("overlay");
 const closeButton = document.getElementById("close-button");
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburgerMenu = document.querySelector(".hamburger-menu");
-  const navLinks = document.querySelector(".nav-links");
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // Cargar el encabezado
+    const headerResponse = await fetch('/assets/header.html');
+    if (!headerResponse.ok) throw new Error('Error al cargar header.html');
+    const headerContent = await headerResponse.text();
+    document.body.insertAdjacentHTML('afterbegin', headerContent);
 
-  hamburgerMenu.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
+    document.addEventListener("componentsLoaded", () => {
+      const hamburgerMenu = document.querySelector(".hamburger-menu");
+      const navLinks = document.querySelector(".nav-links");
+
+      if (hamburgerMenu && navLinks) {
+        hamburgerMenu.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+        });
+      }
+    });
+
+    // Cargar los formularios
+    const formsResponse = await fetch('/assets/forms.html');
+    if (!formsResponse.ok) throw new Error('Error al cargar forms.html');
+    const formsContent = await formsResponse.text();
+    document.body.insertAdjacentHTML('beforeend', formsContent);
+
+    // Cargar el pie de página
+    const footerResponse = await fetch('/assets/footer.html');
+    if (!footerResponse.ok) throw new Error('Error al cargar footer.html');
+    const footerContent = await footerResponse.text();
+    document.body.insertAdjacentHTML('beforeend', footerContent);
+
+    // Cargar scripts adicionales y esperar a que terminen
+    const scripts = [
+      '../ArchivoJS/authFront.js',
+      '../ArchivoJS/aromaScript.js'
+    ];
+
+    let loadedScripts = 0;
+
+    scripts.forEach(src => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.type = 'module';
+      script.onload = () => {
+        loadedScripts++;
+        if (loadedScripts === scripts.length) {
+          // Ahora que ambos scripts han cargado, disparamos el evento
+          document.dispatchEvent(new Event('componentsLoaded'));
+        }
+      };
+      document.body.appendChild(script);
+    });
+
+  } catch (error) {
+    console.error('❌ Error al cargar componentes:', error);
+  }
 });
 
 showFormButton.addEventListener("click", function (event) {

@@ -149,9 +149,21 @@ $d.addEventListener("click", async (e) => {
         text: "Debes iniciar sesión para realizar una compra.",
         confirmButtonText: "Iniciar sesión"
       }).then(() => {
-        window.location.href = "/index.html";
-      });
+        const loginForm = document.getElementById('loginForm');
+        const overlay = document.getElementById('overlay');
 
+        if (loginForm && overlay) {
+          overlay.style.display = "block";
+          loginForm.style.display = "block";
+          overlay.style.display = "flex";
+
+          // Si usas un formulario de registro, escóndelo también
+          const signupForm = document.getElementById('signupForm');
+          if (signupForm) signupForm.style.display = "none";
+        } else {
+          console.error("🛑 Formulario de login no encontrado en el DOM.");
+        }
+      });
       return;
     }
 

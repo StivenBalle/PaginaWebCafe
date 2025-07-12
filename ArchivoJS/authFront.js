@@ -1,5 +1,35 @@
-const form = document.getElementById("signupForm");
+// Inicializar cuando el DOM esté cargado
+document.addEventListener("componentsLoaded", function() {
+  checkAuthStatus();
+  
+  // Agregar evento al botón de cerrar sesión si existe
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+  const loginLink = document.getElementById("login-link");
+  const loginFormDiv = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
 
+  if (loginLink && loginFormDiv && signupForm) {
+    loginLink.addEventListener("click", () => {
+      signupForm.style.display = "none";
+      loginFormDiv.style.display = "block";
+      document.getElementById("overlay").style.display = "flex";
+    });
+  }
+  // Y lo mismo para signup-link
+  const signupLink = document.getElementById("signup-link");
+  if (signupLink) {
+    signupLink.addEventListener("click", () => {
+      signupForm.style.display = "block";
+      loginFormDiv.style.display = "none";
+      document.getElementById("overlay").style.display = "flex";
+    });
+  }
+});
+
+const form = document.getElementById("signupForm");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   console.log("✅ Evento de envío capturado");
@@ -79,17 +109,6 @@ signupLink.addEventListener("click", () => {
   document.getElementById("loginForm").style.display = "none";
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const loginLink = document.getElementById("login-link");
-  const loginFormDiv = document.getElementById("loginForm");
-  const signupForm = document.getElementById("signupForm");
-
-  loginLink.addEventListener("click", () => {
-    signupForm.style.display = "none";
-    loginFormDiv.style.display = "block";
-  });
-});
-
 const closeButton = document.getElementById("close-button-form");
 closeButton.addEventListener("click", (e) => {
   e.preventDefault();
@@ -105,8 +124,8 @@ closeButtonLogin.addEventListener("click", (e) => {
 document.querySelector(".form-login").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email_login").value.trim();
+  const password = document.getElementById("password_login").value;
 
   if (!email || !password) {
     Swal.fire({
@@ -282,82 +301,9 @@ function checkAuthStatus() {
   updateAuthUI();
 }
 
-// Inicializar cuando el DOM esté cargado
-document.addEventListener("DOMContentLoaded", function() {
-  checkAuthStatus();
-  
-  // Agregar evento al botón de cerrar sesión si existe
-  const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
-  }
-});
-
 // Escuchar cambios en el localStorage (para sincronizar entre pestañas)
 window.addEventListener('storage', function(e) {
   if (e.key === 'token' || e.key === 'user') {
     checkAuthStatus();
-  }
-});
-
-// Función adicional para manejar el registro (si tienes formulario de registro)
-document.addEventListener("DOMContentLoaded", function() {
-  const registerForm = document.querySelector(".form-register");
-  
-  if (registerForm) {
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      
-      const name = document.getElementById("register-name").value.trim();
-      const email = document.getElementById("register-email").value.trim();
-      const password = document.getElementById("register-password").value;
-      
-      if (!name || !email || !password) {
-        Swal.fire({
-          icon: "warning",
-          title: "Campos requeridos",
-          text: "Por favor completa todos los campos",
-        });
-        return;
-      }
-      
-      try {
-        const res = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
-        });
-        
-        const data = await res.json();
-        
-        if (res.ok) {
-          Swal.fire({
-            icon: "success",
-            title: "Registro exitoso",
-            text: "Tu cuenta ha sido creada correctamente",
-            timer: 1000,
-            showConfirmButton: false
-          }).then(() => {
-            const loginTab = document.getElementById("login-tab");
-            if (loginTab) {
-              loginTab.click();
-            }
-          });
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: data.error,
-          });
-        }
-      } catch (error) {
-        console.error("Error en registro:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops",
-          text: "No se pudo conectar al servidor",
-        });
-      }
-    });
   }
 });
