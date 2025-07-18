@@ -680,6 +680,10 @@
   transform: scale(0.95);
 }
 
+.search-icon-wrapper {
+  position: relative;
+}
+
 .msg-count {
   position: absolute;
   top: -5px;

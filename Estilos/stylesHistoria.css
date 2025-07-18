@@ -572,7 +572,6 @@
   justify-content: center;
   width: 50px;
   height: 50px;
-  overflow: hidden;
   background-color: rgb(252, 252, 252);
   padding: 15px;
   border-radius: 50%;
@@ -591,6 +590,28 @@
 .tab:active{
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(0.95);
+}
+
+.search-icon-wrapper {
+  position: relative;
+}
+
+.msg-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  font-size: 0.7em;
+  color: red;
+  width: 25px;
+  height: 25px;
+  font-weight: bold;
+  font-size: small;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Estilo para la visibilidad del menú */
